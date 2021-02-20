@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medicine_reminder/src/screens/homepage/homepage.dart';
+import 'package:medicine_reminder/src/services/auth.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -8,6 +9,11 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
+  //final String _Pass;
+  String _email, _password;
+  final _auth = Auth();
+  final Function onClick;
+  _SignupPageState({@required this.onClick});
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -52,6 +58,10 @@ class _SignupPageState extends State<SignupPage> {
                             }
                             return null;
                           },
+                          onChanged: (value) {
+                            _email = value;
+                          },
+                          onSaved: onClick,
                           decoration: InputDecoration(
                               labelText: 'EMAIL',
                               labelStyle: TextStyle(
@@ -73,6 +83,12 @@ class _SignupPageState extends State<SignupPage> {
                             }
                             return null;
                           },
+                          onChanged: (value) {
+                            _password = value;
+                          },
+                          // onSaved: onClick,
+
+                          // obscureText: _Pass=="Please enter password here" ? true:false,
                           decoration: InputDecoration(
                               labelText: 'PASSWORD ',
                               labelStyle: TextStyle(
@@ -147,8 +163,15 @@ class _SignupPageState extends State<SignupPage> {
                               color: Colors.purple,
                               elevation: 7.0,
                               child: GestureDetector(
-                                onTap: () {
+                                onTap: () async {
                                   if (_formKey.currentState.validate()) {
+                                    _formKey.currentState.save();
+                                    print(_email);
+                                    print(_password);
+                                    final authresult =
+                                        await _auth.signUp(_email, _password);
+                                    print(authresult.user.uid);
+
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
